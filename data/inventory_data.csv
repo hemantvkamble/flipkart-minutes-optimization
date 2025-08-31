@@ -1,0 +1,41 @@
+dark_store_id,product_name,category,current_stock,min_stock_level,max_stock_level,reorder_point,lead_time_hours,supplier_reliability,storage_cost_per_unit,shelf_life_days
+DS001,Milk 500ml,Dairy,25,15,60,20,4,0.95,0.5,7
+DS001,Bread Loaf,Bakery,18,10,40,15,6,0.90,0.3,3
+DS001,Eggs 12pc,Dairy,8,5,30,10,4,0.92,0.8,14
+DS001,Potato Chips,Snacks,12,8,50,12,12,0.98,0.2,90
+DS001,Detergent 1kg,Household,5,3,25,8,24,0.88,1.2,365
+DS001,Bananas 1kg,Fruits,4,5,20,8,8,0.85,0.6,5
+DS001,Tomatoes 500g,Vegetables,10,8,25,12,8,0.82,0.7,4
+DS001,Soft Drink 1L,Beverages,12,10,40,15,16,0.94,0.4,180
+DS002,Milk 500ml,Dairy,32,18,65,25,4,0.96,0.5,7
+DS002,Bread Loaf,Bakery,22,12,45,18,6,0.91,0.3,3
+DS002,Eggs 12pc,Dairy,15,8,35,12,4,0.93,0.8,14
+DS002,Potato Chips,Snacks,28,15,55,20,12,0.97,0.2,90
+DS002,Detergent 1kg,Household,8,5,30,10,24,0.89,1.2,365
+DS002,Bananas 1kg,Fruits,12,8,25,12,8,0.87,0.6,5
+DS002,Tomatoes 500g,Vegetables,18,12,30,15,8,0.84,0.7,4
+DS002,Soft Drink 1L,Beverages,25,15,45,20,16,0.95,0.4,180
+DS003,Milk 500ml,Dairy,28,15,60,22,4,0.94,0.5,7
+DS003,Bread Loaf,Bakery,20,10,40,16,6,0.89,0.3,3
+DS003,Eggs 12pc,Dairy,12,6,32,10,4,0.91,0.8,14
+DS003,Potato Chips,Snacks,22,12,52,18,12,0.96,0.2,90
+DS003,Detergent 1kg,Household,6,4,28,8,24,0.87,1.2,365
+DS003,Bananas 1kg,Fruits,8,6,22,10,8,0.83,0.6,5
+DS003,Tomatoes 500g,Vegetables,14,10,28,14,8,0.81,0.7,4
+DS003,Soft Drink 1L,Beverages,20,12,42,18,16,0.93,0.4,180
+DS004,Milk 500ml,Dairy,30,16,62,24,4,0.97,0.5,7
+DS004,Bread Loaf,Bakery,24,11,42,17,6,0.92,0.3,3
+DS004,Eggs 12pc,Dairy,18,7,34,11,4,0.94,0.8,14
+DS004,Potato Chips,Snacks,25,13,53,19,12,0.99,0.2,90
+DS004,Detergent 1kg,Household,9,5,29,9,24,0.90,1.2,365
+DS004,Bananas 1kg,Fruits,10,7,23,11,8,0.86,0.6,5
+DS004,Tomatoes 500g,Vegetables,16,11,29,15,8,0.85,0.7,4
+DS004,Soft Drink 1L,Beverages,22,13,43,19,16,0.96,0.4,180
+DS005,Milk 500ml,Dairy,26,14,58,21,4,0.95,0.5,7
+DS005,Bread Loaf,Bakery,19,9,38,14,6,0.88,0.3,3
+DS005,Eggs 12pc,Dairy,10,5,31,9,4,0.90,0.8,14
+DS005,Potato Chips,Snacks,20,11,51,17,12,0.95,0.2,90
+DS005,Detergent 1kg,Household,7,4,27,7,24,0.86,1.2,365
+DS005,Bananas 1kg,Fruits,6,5,21,9,8,0.82,0.6,5
+DS005,Tomatoes 500g,Vegetables,12,9,27,13,8,0.80,0.7,4
+DS005,Soft Drink 1L,Beverages,18,11,41,17,16,0.92,0.4,180

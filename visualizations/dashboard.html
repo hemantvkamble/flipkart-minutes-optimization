@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart Minutes Optimization Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B35, #047BD2);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #FF6B35;
+            transition: transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive {
+            color: #28a745;
+        }
+
+        .negative {
+            color: #dc3545;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .insights-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .insight-item {
+            background: #e8f4fd;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #047BD2;
+            margin-bottom: 1rem;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #047BD2;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            background: #FF6B35;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Flipkart Minutes Optimization Dashboard</h1>
+        <p>Real-time insights and analytics for 10-15 minute delivery optimization</p>
+    </div>
+
+    <div class="container">
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value" id="fulfillmentRate">85.3%</div>
+                <div class="metric-label">Fulfillment Rate</div>
+                <div class="metric-change positive">↗ +5.2% vs last month</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="avgDeliveryTime">17.2</div>
+                <div class="metric-label">Avg Delivery Time (min)</div>
+                <div class="metric-change positive">↗ -0.8 min vs target</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="stockoutRate">22%</div>
+                <div class="metric-label">Out-of-Stock Rate</div>
+                <div class="metric-change negative">↘ -3% vs last month</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="csatScore">3.4</div>
+                <div class="metric-label">Customer Satisfaction</div>
+                <div class="metric-change positive">↗ +0.2 vs last month</div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('overview')">📊 Overview</button>
+            <button class="nav-tab" onclick="showTab('demand')">📈 Demand Analysis</button>
+            <button class="nav-tab" onclick="showTab('inventory')">📦 Inventory</button>
+            <button class="nav-tab" onclick="showTab('delivery')">🚚 Delivery Zones</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="chart-container">
+                <div class="chart-title">📈 Hourly Performance Trends</div>
+                <div id="hourlyTrends" style="height: 400px;"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">🏪 Store Performance Comparison</div>
+                <div id="storeComparison" style="height: 350px;"></div>
+            </div>
+        </div>
+
+        <!-- Demand Analysis Tab -->
+        <div id="demand" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-title">🔥 Demand Heatmap by Category and Hour</div>
+                <div id="demandHeatmap" style="height: 500px;"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📊 Category Performance Analysis</div>
+                <div id="categoryAnalysis" style="height: 400px;"></div>
+            </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-title">📦 Current Stock Levels vs Optimal</div>
+                <div id="stockLevels" style="height: 400px;"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">🔄 Restocking Priorities</div>
+                <div id="restockingPriorities" style="height: 350px;"></div>
+            </div>
+        </div>
+
+        <!-- Delivery Zones Tab -->
+        <div id="delivery" class="tab-content">
+            <div class="chart-container">
+                <div class="chart-title">🗺️ Delivery Zone Coverage</div>
+                <div id="deliveryZones" style="height: 450px;"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">🚦 Traffic Impact on Delivery Times</div>
+                <div id="trafficImpact" style="height: 350px;"></div>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="insights-section">
+            <h2 style="margin-bottom: 1.5rem; color: #333;">💡 Key Insights & Recommendations</h2>
+            
+            <div class="insight-item">
+                <div class="insight-title">🚨 Critical: High Out-of-Stock Rate</div>
+                <p>Current out-of-stock rate of 22% significantly impacts customer satisfaction. Recommend implementing ML-based demand forecasting to reduce to target 10%.</p>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-title">⏰ Opportunity: Peak Hour Optimization</div>
+                <p>Peak demand hours (8-9 AM, 6-8 PM) show 40% higher delivery times. Suggest pre-positioning inventory and dynamic staffing adjustments.</p>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-title">📦 Success: Inventory Turnover Improvement</div>
+                <p>Dairy and bakery categories showing 25% improvement in turnover rates after optimization algorithm implementation.</p>
+            </div>
+
+            <div class="insight-item">
+                <div class="insight-title">🗺️ Action: Zone Boundary Adjustment</div>
+                <p>DS001 and DS003 showing overlap in coverage areas. Recommend zone boundary optimization to improve efficiency by 15%.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 Flipkart Minutes Optimization Project | Last updated: <span id="lastUpdated"></span></p>
+    </div>
+
+    <script>
+        // Set last updated time
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Trigger chart updates for the active tab
+            updateChartsForTab(tabName);
+        }
+
+        // Sample data and chart creation
+        function createHourlyTrends() {
+            const hours = Array.from({length: 24}, (_, i) => i);
+            const deliveryTimes = [12, 11, 10, 9, 11, 15, 22, 26, 24, 18, 16, 15, 17, 16, 15, 17, 19, 25, 28, 24, 20, 18, 15, 13];
+            const fulfillmentRates = [95, 98, 99, 99, 96, 85, 75, 70, 78, 88, 92, 94, 91, 93, 95, 90, 85, 75, 72, 80, 88, 92, 95, 97];
+
+            const trace1 = {
+                x: hours,
+                y: deliveryTimes,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Delivery Time (min)',
+                line: {color: '#FF6B35', width: 3},
+                yaxis: 'y'
+            };
+
+            const trace2 = {
+                x: hours,
+                y: fulfillmentRates,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Fulfillment Rate (%)',
+                line: {color: '#047BD2', width: 3},
+                yaxis: 'y2'
+            };
+
+            const layout = {
+                xaxis: {title: 'Hour of Day'},
+                yaxis: {title: 'Delivery Time (minutes)', side: 'left'},
+                yaxis2: {title: 'Fulfillment Rate (%)', side: 'right', overlaying: 'y'},
+                hovermode: 'x unified',
+                showlegend: true
+            };
+
+            Plotly.newPlot('hourlyTrends', [trace1, trace2], layout, {responsive: true});
+        }
+
+        function createStoreComparison() {
+            const stores = ['DS001', 'DS002', 'DS003', 'DS004', 'DS005'];
+            const deliveryTimes = [16.2, 18.5, 15.8, 19.2, 17.1];
+            const fulfillmentRates = [87, 82, 89, 78, 85];
+
+            const trace = {
+                x: stores,
+                y: deliveryTimes,
+                type: 'bar',
+                marker: {
+                    color: fulfillmentRates,
+                    colorscale: 'RdYlGn',
+                    colorbar: {title: 'Fulfillment Rate (%)'}
+                },
+                text: deliveryTimes.map(time => `${time} min`),
+                textposition: 'auto',
+                hovertemplate: '<b>%{x}</b><br>Delivery Time: %{y} min<br>Fulfillment Rate: %{marker.color}%<extra></extra>'
+            };
+
+            const layout = {
+                xaxis: {title: 'Dark Stores'},
+                yaxis: {title: 'Average Delivery Time (minutes)'},
+                annotations: [{
+                    x: 2,
+                    y: 12,
+                    text: 'Target: 12 min',
+                    showarrow: true,
+                    arrowhead: 2,
+                    arrowcolor: 'red'
+                }]
+            };
+
+            Plotly.newPlot('storeComparison', [trace], layout, {responsive: true});
+        }
+
+        function createDemandHeatmap() {
+            const categories = ['Dairy', 'Bakery', 'Snacks', 'Vegetables', 'Fruits', 'Beverages', 'Household'];
+            const hours = Array.from({length: 24}, (_, i) => i);
+            
+            // Sample demand data (normalized)
+            const demandData = [
+                [10, 8, 5, 3, 5, 15, 35, 42, 38, 28, 22, 20, 25, 22, 18, 20, 25, 32, 40, 35, 28, 22, 18, 12], // Dairy
+                [5, 3, 2, 1, 3, 8, 25, 35, 40, 32, 25, 18, 22, 20, 15, 12, 15, 18, 22, 20, 15, 10, 8, 6], // Bakery
+                [2, 1, 1, 0, 1, 3, 6, 8, 10, 12, 15, 18, 22, 20, 18, 20, 25, 30, 35, 40, 45, 50, 48, 30], // Snacks
+                [1, 1, 0, 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 10, 8, 12, 18, 25, 30, 28, 20, 15, 10, 5], // Vegetables
+                [2, 1, 1, 0, 1, 3, 5, 8, 10, 12, 15, 18, 20, 18, 15, 18, 22, 25, 20, 18, 15, 12, 8, 5], // Fruits
+                [3, 2, 1, 1, 2, 4, 6, 8, 10, 12, 15, 18, 22, 20, 18, 20, 25, 30, 35, 32, 40, 45, 42, 30], // Beverages
+                [1, 0, 0, 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 10, 8, 10, 12, 15, 18, 16, 12, 8, 5, 3] // Household
+            ];
+
+            const trace = {
+                z: demandData,
+                x: hours,
+                y: categories,
+                type: 'heatmap',
+                colorscale: 'RdYlBu_r',
+                hovertemplate: '<b>%{y}</b><br>Hour: %{x}<br>Demand: %{z}<extra></extra>'
+            };
+
+            const layout = {
+                xaxis: {title: 'Hour of Day'},
+                yaxis: {title: 'Product Category'},
+                coloraxis: {colorbar: {title: 'Demand Intensity'}}
+            };
+
+            Plotly.newPlot('demandHeatmap', [trace], layout, {responsive: true});
+        }
+
+        function createCategoryAnalysis() {
+            const categories = ['Dairy', 'Bakery', 'Snacks', 'Vegetables', 'Fruits', 'Beverages', 'Household'];
+            const fulfillmentRates = [78, 85, 92, 75, 80, 88, 95];
+            const avgDeliveryTimes = [19.2, 16.5, 12.8, 21.5, 18.7, 14.2, 15.9];
+
+            const trace1 = {
+                x: categories,
+                y: fulfillmentRates,
+                type: 'bar',
+                name: 'Fulfillment Rate (%)',
+                marker: {color: '#047BD2'},
+                yaxis: 'y'
+            };
+
+            const trace2 = {
+                x: categories,
+                y: avgDeliveryTimes,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Avg Delivery Time (min)',
+                line: {color: '#FF6B35', width: 3},
+                yaxis: 'y2'
+            };
+
+            const layout = {
+                xaxis: {title: 'Product Category'},
+                yaxis: {title: 'Fulfillment Rate (%)', side: 'left'},
+                yaxis2: {title: 'Delivery Time (minutes)', side: 'right', overlaying: 'y'},
+                hovermode: 'x unified',
+                showlegend: true
+            };
+
+            Plotly.newPlot('categoryAnalysis', [trace1, trace2], layout, {responsive: true});
+        }
+
+        function createStockLevels() {
+            const products = ['Milk 500ml', 'Bread Loaf', 'Eggs 12pc', 'Potato Chips', 'Detergent 1kg', 'Bananas 1kg', 'Tomatoes 500g', 'Soft Drink 1L'];
+            const currentStock = [25, 18, 8, 12, 5, 4, 10, 12];
+            const optimalStock = [35, 25, 15, 20, 10, 8, 15, 18];
+
+            const trace1 = {
+                x: products,
+                y: currentStock,
+                type: 'bar',
+                name: 'Current Stock',
+                marker: {color: '#FF6B35'}
+            };
+
+            const trace2 = {
+                x: products,
+                y: optimalStock,
+                type: 'bar',
+                name: 'Optimal Stock',
+                marker: {color: '#047BD2'}
+            };
+
+            const layout = {
+                xaxis: {title: 'Products'},
+                yaxis: {title: 'Stock Quantity'},
+                barmode: 'group',
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('stockLevels', [trace1, trace2], layout, {responsive: true});
+        }
+
+        function createRestockingPriorities() {
+            const products = ['Bananas 1kg', 'Eggs 12pc', 'Detergent 1kg', 'Tomatoes 500g', 'Milk 500ml', 'Bread Loaf'];
+            const urgencyScores = [95, 87, 75, 65, 45, 30];
+            const colors = urgencyScores.map(score => 
+                score > 80 ? '#dc3545' : score > 60 ? '#ffc107' : '#28a745'
+            );
+
+            const trace = {
+                x: urgencyScores,
+                y: products,
+                type: 'bar',
+                orientation: 'h',
+                marker: {color: colors},
+                text: urgencyScores.map(score => `${score}%`),
+                textposition: 'auto',
+                hovertemplate: '<b>%{y}</b><br>Urgency Score: %{x}%<extra></extra>'
+            };
+
+            const layout = {
+                xaxis: {title: 'Urgency Score (%)'},
+                yaxis: {title: 'Products'},
+                annotations: [{
+                    x: 80,
+                    y: 5.5,
+                    text: 'Critical Threshold',
+                    showarrow: true,
+                    arrowhead: 2,
+                    arrowcolor: 'red'
+                }]
+            };
+
+            Plotly.newPlot('restockingPriorities', [trace], layout, {responsive: true});
+        }
+
+        function createDeliveryZones() {
+            // Sample delivery zone data
+            const stores = [
+                {name: 'DS001 - Koramangala', lat: 12.9716, lon: 77.5946, radius: 2.3},
+                {name: 'DS002 - Whitefield', lat: 12.9698, lon: 77.7500, radius: 2.1},
+                {name: 'DS003 - Malleshwaram', lat: 13.0067, lon: 77.5664, radius: 2.5},
+                {name: 'DS004 - BTM Layout', lat: 12.9279, lon: 77.6271, radius: 1.9},
+                {name: 'DS005 - Hebbal', lat: 13.0358, lon: 77.5970, radius: 2.2}
+            ];
+
+            const trace = {
+                type: 'scattermapbox',
+                lat: stores.map(s => s.lat),
+                lon: stores.map(s => s.lon),
+                mode: 'markers+text',
+                marker: {
+                    size: stores.map(s => s.radius * 10),
+                    color: '#FF6B35',
+                    opacity: 0.7
+                },
+                text: stores.map(s => s.name),
+                textposition: 'top center',
+                hovertemplate: '<b>%{text}</b><br>Delivery Radius: %{marker.size:.1f} km<extra></extra>'
+            };
+
+            const layout = {
+                mapbox: {
+                    style: 'open-street-map',
+                    center: {lat: 12.97, lon: 77.59},
+                    zoom: 10
+                },
+                margin: {r: 0, t: 0, l: 0, b: 0}
+            };
+
+            Plotly.newPlot('deliveryZones', [trace], layout, {responsive: true});
+        }
+
+        function createTrafficImpact() {
+            const hours = Array.from({length: 24}, (_, i) => i);
+            const deliveryTimes = [12, 11, 10, 9, 11, 15, 22, 26, 24, 18, 16, 15, 17, 16, 15, 17, 19, 25, 28, 24, 20, 18, 15, 13];
+            const trafficLevels = ['Light', 'Light', 'Light', 'Light', 'Light', 'Medium', 'Heavy', 'Heavy', 'Heavy', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Medium', 'Heavy', 'Heavy', 'Heavy', 'Medium', 'Medium', 'Light', 'Light'];
+            
+            const colors = trafficLevels.map(level => 
+                level === 'Heavy' ? '#dc3545' : level === 'Medium' ? '#ffc107' : '#28a745'
+            );
+
+            const trace = {
+                x: hours,
+                y: deliveryTimes,
+                type: 'bar',
+                marker: {color: colors},
+                text: trafficLevels,
+                textposition: 'outside',
+                hovertemplate: '<b>Hour %{x}</b><br>Delivery Time: %{y} min<br>Traffic: %{text}<extra></extra>'
+            };
+
+            const layout = {
+                xaxis: {title: 'Hour of Day'},
+                yaxis: {title: 'Average Delivery Time (minutes)'},
+                annotations: [{
+                    x: 12,
+                    y: 12,
+                    text: 'Target: 12 min',
+                    showarrow: true,
+                    arrowhead: 2,
+                    arrowcolor: 'blue'
+                }]
+            };
+
+            Plotly.newPlot('trafficImpact', [trace], layout, {responsive: true});
+        }
+
+        function updateChartsForTab(tabName) {
+            switch(tabName) {
+                case 'overview':
+                    createHourlyTrends();
+                    createStoreComparison();
+                    break;
+                case 'demand':
+                    createDemandHeatmap();
+                    createCategoryAnalysis();
+                    break;
+                case 'inventory':
+                    createStockLevels();
+                    createRestockingPriorities();
+                    break;
+                case 'delivery':
+                    createDeliveryZones();
+                    createTrafficImpact();
+                    break;
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create initial charts for overview tab
+            createHourlyTrends();
+            createStoreComparison();
+
+            // Update metrics periodically (simulate real-time updates)
+            setInterval(updateMetrics, 30000); // Update every 30 seconds
+        });
+
+        function updateMetrics() {
+            // Simulate metric updates
+            const fulfillmentRate = document.getElementById('fulfillmentRate');
+            const currentRate = parseFloat(fulfillmentRate.textContent.replace('%', ''));
+            const newRate = currentRate + (Math.random() - 0.5) * 2;
+            fulfillmentRate.textContent = `${Math.max(0, Math.min(100, newRate)).toFixed(1)}%`;
+
+            // Update last updated time
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        }
+    </script>
+</body>
+</html>
