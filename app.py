@@ -594,7 +594,7 @@ def main():
     # Project info
     st.sidebar.markdown("""
     ### 📋 Project Info
-    **Created by:** Product Manager  
+    **Created by:** Hemant Kamble  
     **Date:** August 2024  
     **Purpose:** Flipkart Minutes Optimization
     """)
@@ -617,3 +617,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
